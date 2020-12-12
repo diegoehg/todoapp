@@ -31,3 +31,7 @@ def index():
     ]
 
     return render_template('index.html', data=todos)
+
+
+if __name__ == '__main__':
+    app.run()
