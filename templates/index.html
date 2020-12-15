@@ -6,10 +6,26 @@
         .hidden {
             display: none;
         }
+
         ul {
             list-style: none;
             margin: 0;
             padding: 0;
+            width: 200px;
+        }
+
+        li {
+            clear: both;
+        }
+
+        li button {
+            -webkit-appearance: none;
+            border: none;
+            outline: none;
+            color: red;
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
         }
         </style>
     </head>
@@ -26,10 +42,12 @@
             {% for d in data %}
             <li>
                 <input type="checkbox"
-                       class="check-completed"
-                       data-id="{{ d.id }}"
-                       {% if d.completed %} checked {% endif%} />
+                    class="check-completed" 
+                    data-id="{{ d.id }}"
+                    {% if d.completed %} checked {% endif%} />
                 {{ d.description }}
+                <button class="delete-todo" 
+                    data-id="{{ d.id }}">&cross;</button>
             </li>
             {% endfor %}
         </ul>
@@ -51,6 +69,25 @@
                         headers: {
                             "Content-Type": "application/json"
                         }
+                    })
+                    .then(function() {
+                        document.getElementById('error').className = 'hidden';
+                    })
+                    .catch(function() {
+                        document.getElementById('error').className = '';
+                    });
+                }
+            });
+
+            const deleteButtons = document.querySelectorAll(".delete-todo");
+
+            deleteButtons.forEach(function(deleteButton) {
+                deleteButton.onclick = function(e) {
+                    console.log('delete', e);
+                    const todoId = e.target.dataset.id;
+
+                    fetch('/todos/' + todoId, {
+                        method: 'DELETE'
                     })
                     .then(function() {
                         document.getElementById('error').className = 'hidden';
